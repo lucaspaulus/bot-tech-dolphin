@@ -1,7 +1,7 @@
 {
   "name": "bot-discord",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "main.js",
   "license": "MIT",
   "description": "um bot para o discord",
   "author": "Lucas Paulus",
@@ -10,7 +10,7 @@
     "dotenv": "^16.3.1"
   },
   "scripts": {
-    "dev": "nodemon ./index.js",
+    "dev": "nodemon ./main.js",
     "deploy": "nodemon ./deploy-commands.js"
   },
   "devDependencies": {
