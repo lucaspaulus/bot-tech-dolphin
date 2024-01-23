@@ -25,7 +25,7 @@ for(const folder of commandsFolders){
         }
     }
 }
-console.log(commands)
+
 const rest = new REST().setToken(APP_TOKEN);
  
 (async ()=>{
@@ -36,8 +36,9 @@ const rest = new REST().setToken(APP_TOKEN);
             Routes.applicationCommands(APP_ID),
             {body: commands},
         )
-
+        console.log(commands)   
         console.log(`Aplicação registrou os seguintes comandos: ${data.length}`)
+
     } catch (error) {
         console.error(error)
     }

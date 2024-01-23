@@ -1,15 +1,17 @@
 const { Client, Events, GatewayIntentBits, Collection } = require("discord.js")
-
+ 
 require("dotenv").config()
+const mongoose = require("./src/server/database/connection.js")
+const fs = require("node:fs")
+const path = require("node:path")
+const axios = require("./src/config/axios.js")
+
 const {APP_TOKEN} = process.env
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] })
 client.commands = new Collection()
 
-const fs = require("node:fs")
-const path = require("node:path")
-
-const commandsDir = path.join(__dirname, "commands")
+const commandsDir = path.join(__dirname, "src/commands")
 const commandsFolders= fs.readdirSync(commandsDir)
 
 for(const folder of commandsFolders){
@@ -28,32 +30,18 @@ for(const folder of commandsFolders){
     }
 }
  
-client.once(Events.ClientReady, c => { 
-	console.log(`Server Bot: ${c.user.tag.split("#")[0]}, Status: STARTED`)
-})
+const eventsPath = path.join(__dirname, 'src/events');
+const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
 
-client.on(Events.InteractionCreate, async interaction => {
-    if(!interaction.isChatInputCommand()) return;
+for (const file of eventFiles) {
+	const filePath = path.join(eventsPath, file);
+	const event = require(filePath);
+	if (event.once) {
+		client.once(event.name, (...args) => event.run(...args));
+	} else {
+		client.on(event.name, (...args) => event.run(...args));
+	}
+}
 
-    const command = interaction.client.commands.get(interaction.commandName)
-    
-    if(!command){
-        return console.error(`nenhum comando com esse nome ${interaction.commandName}`)
-    }
-
-    try {
-        await command.run(interaction)
-
-    } catch (error) {
-        console.error(error)
-
-        if (interaction.replied || interaction.deferred) {
-			await interaction.followUp({ content: 'Ocorreu um erro ao executar este comando!', ephemeral: true });
-		} else {
-			await interaction.reply({ content: 'Ocorreu um erro ao executar este comando!', ephemeral: true });
-		}
-
-    }
-})
-
+ 
 client.login(APP_TOKEN) 
