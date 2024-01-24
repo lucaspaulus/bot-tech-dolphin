@@ -4,11 +4,12 @@ const dateFormated = require("../utils/dateFormated.js")
 const keywords = ["Desenvolvedor front end", "ux ui design", "Desenvolvedor back end"]
 
 const jobs_data = async (axios)=>{
-   
+    const date = dateFormated()
+
     const jobsList = {
         total: 0,
         jobs: [],
-        createdAt: dateFormated
+        createdAt: date
     }
 
     for(const keyword of keywords){
@@ -32,7 +33,7 @@ const jobs_data = async (axios)=>{
                     }
                 })
            } catch (error) {
-                console.log("ocorreu um erro e não vou resolver 🤣")
+                console.log("Este erro será resolvido em breve...")
            }
      
         

@@ -1,7 +1,6 @@
 const { Events } = require("discord.js")
 const JobModel = require("../server/models/Jobs_model.js")
 const schedule = require("../components/jobs/schedule.js")
-const { SlashCommandBuilder, EmbedBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder } = require("discord.js")
 
 module.exports = {
     name: Events.InteractionCreate,
@@ -38,7 +37,7 @@ module.exports = {
                         
                         await interaction.editReply({content: message, ephemeral: true})
                     } else {
-                        
+                        await JobModel.updateOne({ guildId: data.guildId }, data)
                         const jobUpdated = await JobModel.findOne({ guildId: data.guildId })
                         const channelUpdated = await channel(interaction, jobUpdated)
                         const message = await schedule(jobUpdated.scheduled.hours, jobUpdated.scheduled.minutes, channelUpdated)
